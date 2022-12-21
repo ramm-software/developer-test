@@ -5,11 +5,13 @@ module Rsl {
     export class ApplicationViewModel {
         public streetlights: KnockoutObservable<Models.IStreetlightSummary[]>;
         public selectedStreetlight: KnockoutObservable<IStreetlightDetailViewModel>;
+        public lightStateToggleOperationIndicator: KnockoutObservable<String>;
         public electricDrawTotal: KnockoutComputed<number>;
         // get applicant to add a loader here
         constructor(private _apiAccess: IApiAccess) {
             this.streetlights = ko.observable<Models.IStreetlightSummary[]>();
             this.selectedStreetlight = ko.observable<IStreetlightDetailViewModel>();
+            this.lightStateToggleOperationIndicator = ko.observable<String>("");
             this.electricDrawTotal = ko.pureComputed(function () {
                 return this.getElectricDrawTotal(this.selectedStreetlight());
             }, this);
@@ -35,14 +37,15 @@ module Rsl {
 
         public toggleLightState(light: IStreetlightDetailViewModel): void {
             var isOn = light.isSwitchedOn();
-            
+            this.lightStateToggleOperationIndicator(isOn ? "Turning all bulbs off..." : "Turning all bulbs on...");
+
             if (isOn) {
                 this._apiAccess.switchOffLight(light.id).always(x => {
                     this.selectStreetlight(this, {
                         id: light.id,
                         description: light.description
                     });
-                });
+                }).done(x => this.lightStateToggleOperationIndicator(""));
             }
             else {
                 this._apiAccess.switchOnLight(light.id).always(x => {
@@ -50,7 +53,7 @@ module Rsl {
                         id: light.id,
                         description: light.description
                     });
-                });
+                }).done(x => this.lightStateToggleOperationIndicator(""));
             }
         }
 

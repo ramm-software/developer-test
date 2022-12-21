@@ -20,7 +20,10 @@
         <div data-bind="with: $root">
             <button class="pull-right" data-bind="click: toggleLightState.bind($data, selectedStreetlight()), text: selectedStreetlight().isSwitchedOn() ? 'Switch Off' : 'Switch On'"></button>
             <h2>Streetlight Information</h2>
-            <p>Power Draw: <span data-bind="text: electricDrawTotal"></span>W</p>
+            <p>Power Draw: 
+                <span data-bind="text: electricDrawTotal"></span>W
+                <span data-bind="text: lightStateToggleOperationIndicator()"></span>
+            </p>
         </div>
 
         <div>
