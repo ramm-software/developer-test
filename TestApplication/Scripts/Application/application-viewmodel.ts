@@ -30,7 +30,7 @@ module Rsl {
 
         public toggleLightState(light: IStreetlightDetailViewModel): void {
             var isOn = light.isSwitchedOn();
-
+            
             if (isOn) {
                 this._apiAccess.switchOffLight(light.id).always(x => {
                     this.selectStreetlight(this, {
