@@ -5,10 +5,15 @@ module Rsl {
     export class ApplicationViewModel {
         public streetlights: KnockoutObservable<Models.IStreetlightSummary[]>;
         public selectedStreetlight: KnockoutObservable<IStreetlightDetailViewModel>;
+        public electricDrawTotal: KnockoutComputed<number>;
         // get applicant to add a loader here
         constructor(private _apiAccess: IApiAccess) {
             this.streetlights = ko.observable<Models.IStreetlightSummary[]>();
             this.selectedStreetlight = ko.observable<IStreetlightDetailViewModel>();
+            this.electricDrawTotal = ko.pureComputed(function () {
+                return this.getElectricDrawTotal(this.selectedStreetlight());
+            }, this);
+
             this.loadData().done(x => {
                 this.streetlights(x);
             });
@@ -69,6 +74,18 @@ module Rsl {
             this._apiAccess.loadBulbDetail(bulb.bulbInformation.id).done(x => {
                 bulb.bulbStatus(x.bulbCurrentState);
             });
+        }
+
+        public getElectricDrawTotal(light: IStreetlightDetailViewModel): number {
+            if (light.isSwitchedOn()) {
+                return light.electricalDraw + light.bulbs.filter(function (bulb) {
+                    return bulb.bulbStatus().isOn == true;
+                }).reduce(function (accumulator, bulb) {
+                    return accumulator + bulb.bulbInformation.powerDraw;
+                }, 0);
+            }
+
+            return 0;
         }
 
         private loadData(): JQueryPromise<Models.IStreetlightSummary[]> {
