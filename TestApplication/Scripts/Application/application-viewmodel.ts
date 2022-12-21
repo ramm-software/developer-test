@@ -45,7 +45,8 @@ module Rsl {
                         id: light.id,
                         description: light.description
                     });
-                }).done(x => this.lightStateToggleOperationIndicator(""));
+                    this.lightStateToggleOperationIndicator("")
+                });
             }
             else {
                 this._apiAccess.switchOnLight(light.id).always(x => {
@@ -53,7 +54,8 @@ module Rsl {
                         id: light.id,
                         description: light.description
                     });
-                }).done(x => this.lightStateToggleOperationIndicator(""));
+                    this.lightStateToggleOperationIndicator("")
+                });
             }
         }
 
