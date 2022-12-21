@@ -27,11 +27,19 @@
             <h3>Bulb Information</h3>
             <ul class="list-group" data-bind="foreach: bulbs">
                 <li class="list-group-item">
-                    <div class="bulb-display"></div>
+                    <div class="bulb-display"
+                         data-bind="css: (bulbStatus().bulbTemperature &gt bulbInformation.maxTemperature || bulbStatus().fault) ?
+                         'bulb-display fault' : (bulbStatus().isOn == true ? 'bulb-display lit' : 'bulb-display unlit')">
+                    </div>
                     <span data-bind="text: bulbStatus().isOn ? 'On' : 'Off'"></span>
                     <span data-bind="bulbInformation.bulbType"></span>
                     <span data-bind="visible: $root.isFailed($data)">Failed</span>
-                    Temperature: <span data-bind="text: bulbStatus().bulbTemperature"></span>/<span data-bind="text:bulbInformation.maxTemperature"></span>C
+                    Temperature: 
+                    <span data-bind="text: bulbStatus().bulbTemperature, 
+                                css: bulbStatus().bulbTemperature == 0 ? 
+                                'body light-grey' : (bulbStatus().bulbTemperature &lt bulbInformation.maxTemperature / 2 ? 
+                                'body' : (bulbStatus().bulbTemperature &gt bulbInformation.maxTemperature) ? 'body red' : 'body orange')">
+                    </span>/<span data-bind="text: bulbInformation.maxTemperature"></span>C
                     Hours: <span data-bind="text: bulbStatus().bulbHours"></span>/<span data-bind="text:bulbInformation.maxHours"></span>hrs
                     <button class="pull-right">Toggle Bulb State</button>
                 </li>
